@@ -32,11 +32,23 @@ int main(int argc, char **argv)
     int myValue = values[world_rank];
     for (int step = 0; step < totalSteps; step++)
     {
-        const int partnerRank = (world_rank + simplePow(2, step)) % world_size;
+        const int shift = simplePow(2, step);
+        const int sendToRank = (world_rank + shift) % world_size;
+        int reciveFromRank = world_rank - shift;
+        if (reciveFromRank < 0)
+            reciveFromRank += world_size;
 
-        printf("Itearton %d -> Process %d sends to %d\n", step, world_rank, partnerRank);
+        printf("Itearton %d -> Process %d sends to %d and recieves from %d\n", step, world_rank, sendToRank, reciveFromRank);
+
+        int partnerValue;
+        MPI_Sendrecv(&myValue, 1, MPI_INT, sendToRank, 0,
+                     &partnerValue, 1, MPI_INT, reciveFromRank, 0,
+                     MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        myValue = nwd(myValue, partnerValue);
     }
 
+    printf("Program %d -> Result: %d\n", world_rank, myValue);
 
     MPI_Finalize();
     return EXIT_SUCCESS;
