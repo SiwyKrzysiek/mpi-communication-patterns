@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-    // Create pipilen communicator
+    // Create pipeline communicator
     MPI_Comm cartesianCommunicator;
     const int dimentionSizes[] = {world_size};
     const int periods[] = {false};
@@ -27,8 +27,11 @@ int main(int argc, char **argv)
 
     int cartesianRank;
     MPI_Comm_rank(cartesianCommunicator, &cartesianRank);
+    // printf("From rank %d to %d\n", world_rank, cartesianRank);
 
-    printf("From rank %d to %d\n", world_rank, cartesianRank);
+    int previousRank, nextRank;
+    MPI_Cart_shift(cartesianCommunicator, 0, 1, &previousRank, &nextRank);
+    printf("%d: previous is %d, next is %d\n", cartesianRank, previousRank, nextRank);
 
     return EXIT_SUCCESS;
 }
