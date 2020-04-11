@@ -13,10 +13,16 @@ int simplePow(int number, int exponent);
 // Program arguments count should match number of prcesses and all should be numbers
 bool validateAndParseArguments(int argc, char **argv, int* valuesOut);
 
+void mpiClenup()
+{
+    MPI_Finalize();
+}
+
 int main(int argc, char **argv)
 {
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
+    atexit(mpiClenup);
 
     // Get the number of all processes and rank of current process
     int world_size, world_rank;
@@ -25,10 +31,7 @@ int main(int argc, char **argv)
 
     int values[world_size];
     if (!validateAndParseArguments(argc, argv, values))
-    {
-        MPI_Finalize();
         return EXIT_FAILURE;
-    }
 
     const int totalSteps = log2(world_size);
 #ifdef DEBUG
@@ -63,7 +66,6 @@ int main(int argc, char **argv)
         printf("GCD of all provided nubmers is %d\n", myValue);
 #endif
 
-    MPI_Finalize();
     return EXIT_SUCCESS;
 }
 
