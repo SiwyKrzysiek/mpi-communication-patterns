@@ -3,12 +3,16 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <stdbool.h>
 
 // Calculate greates common dividor of a and b
 int nwd(int a, int b);
 
 // Simple implementation of accurate exponentiation
 int simplePow(int number, int exponent);
+
+// Program arguments count should match number of prcesses and all should be numbers
+bool validateAndParseArguments(int argc, char **argv, int* valuesOut);
 
 int main(int argc, char **argv)
 {
@@ -20,10 +24,12 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-    // TODO: Read numbers from args
-    // For now use fixed values
-    const int values[] = {15, 21, 24, 57};
-    assert(world_size == 4);
+    int values[world_size];
+    if (!validateAndParseArguments(argc, argv, values))
+    {
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
 
     const int totalSteps = log2(world_size);
     if (world_rank == 0)
@@ -52,6 +58,36 @@ int main(int argc, char **argv)
 
     MPI_Finalize();
     return EXIT_SUCCESS;
+}
+
+bool validateAndParseArguments(int argc, char **argv, int* valuesOut)
+{
+    int world_size, world_rank;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+    if (argc-1 != world_size)
+    {
+        if (world_rank == 0)
+            printf("Argumetns number doesn't match processes number\n"
+                   "Expecetd %d, recived %d\n", world_size, argc-1);
+        return false;
+    }
+
+    for (int i = 0; i < argc-1; i++)
+    {
+        int value = atoi(argv[i+1]);
+        if (value <= 0)
+        {
+            if (world_rank == 0)
+                printf("Argument number %d is not valid. Must be a positive nuber\n", i+1);
+            return false;
+        }
+
+        valuesOut[i] = value;
+    }
+
+    return true;
 }
 
 // Calculate greates common dividor of a and b
