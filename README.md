@@ -27,3 +27,32 @@ W każdej iteracji algorytmu każdy wątek będzie wyznaczał cześć wspólną 
 Dzięki zastosowaniu wzorca upowszechniania łączone będą niezależne zbiory.
 Dzięki temu ilość zbiorów dla których zostanie policzona część wspólna w n-tym kroku wynosi 2ⁿ.
 Pozwoli to na osiągnięcie wyniku w logarytmicznej liczbie kroków.
+
+### Rozwiązanie
+
+Program będący rzowiązaniem zadania znajduje się w katalogu [nwd](./nwd).
+
+Program kożysta z biblioteki MPI. Trzeaba ją **zainstalować** przed kompilacją i uruchomieniem.
+
+#### Kompilacja
+
+Do skomilowanaia programu można wykorzystać narzędzie makfie.
+
+Przykład kompilacji
+
+```bash
+make
+```
+
+#### Uruchomienie
+
+Program trzeba urchomić przy pomocy polecenia mpirun.  
+Liczba procesów musi być równa liczbie argumentów, które stanowią liczby dla których będzie obliczana wspólna wartość NWD.
+
+Liba argumentów musi być **wielokrotnościa liczby 2**.
+
+Przykład uruchomienia
+
+```bash
+mpirun -n 4 ./nwd 15 21 24 57
+```
