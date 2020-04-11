@@ -50,33 +50,33 @@ int main(int argc, char **argv)
     {
         int part[PART_LENGTH];
 
-        if (previousRank == MPI_PROC_NULL) // Start sending data
+        if (cartesianRank == 0) // First process starts sending data
         {
             int shift = i * PART_LENGTH;
             memcpy(part, vector + shift, PART_LENGTH * sizeof(*part));
-
-            MPI_Send(part, PART_LENGTH, MPI_INT, nextRank, 0, cartesianCommunicator);
         }
-        else if(nextRank == MPI_PROC_NULL) // Last process calculates sum of received values
+
+        MPI_Recv(part, PART_LENGTH, MPI_INT, previousRank, 0, cartesianCommunicator, MPI_STATUS_IGNORE);
+
+        if (cartesianRank != 0 && cartesianRank != world_size-1) // Process in the middle transforms data
         {
-            MPI_Recv(part, PART_LENGTH, MPI_INT, previousRank, 0, cartesianCommunicator, MPI_STATUS_IGNORE);
+            for (int i = 0; i < PART_LENGTH; i++)
+            {
+                part[i] = part[i] + 1;
+            }
+        }
+        else if(cartesianRank == world_size-1) // Last process calculates sum of received values
+        {
             for (int i = 0; i < PART_LENGTH; i++)
             {
                 sum += part[i];
             }
         }
-        else // Process in the middle transforms data
-        {
-            MPI_Recv(part, PART_LENGTH, MPI_INT, previousRank, 0, cartesianCommunicator, MPI_STATUS_IGNORE);
-            for (int i = 0; i < PART_LENGTH; i++)
-            {
-                part[i] = part[i] + 1;
-            }
-            MPI_Send(part, PART_LENGTH, MPI_INT, nextRank, 0, cartesianCommunicator);
-        }
+
+        MPI_Send(part, PART_LENGTH, MPI_INT, nextRank, 0, cartesianCommunicator);
     }
 
-    if (nextRank == MPI_PROC_NULL) // Last process
+    if (cartesianRank == world_size-1) // Last process
     {
         printf("Sum of received values: %lld\n", sum);
     }
