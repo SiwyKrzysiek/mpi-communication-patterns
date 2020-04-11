@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <assert.h>
 #include <stdbool.h>
 
 // Calculate greates common dividor of a and b
@@ -32,8 +31,10 @@ int main(int argc, char **argv)
     }
 
     const int totalSteps = log2(world_size);
+#ifdef DEBUG
     if (world_rank == 0)
         printf("Calculations will take %d steps\n\n", totalSteps);
+#endif
 
     int myValue = values[world_rank];
     for (int step = 0; step < totalSteps; step++)
@@ -43,8 +44,9 @@ int main(int argc, char **argv)
         int reciveFromRank = world_rank - shift;
         if (reciveFromRank < 0)
             reciveFromRank += world_size;
-
+#ifdef DEBUG
         printf("Itearton %d -> Process %d sends to %d and recieves from %d\n", step, world_rank, sendToRank, reciveFromRank);
+#endif
 
         int partnerValue;
         MPI_Sendrecv(&myValue, 1, MPI_INT, sendToRank, 0,
@@ -54,7 +56,12 @@ int main(int argc, char **argv)
         myValue = nwd(myValue, partnerValue);
     }
 
+#ifdef DEBUG
     printf("Program %d -> Result: %d\n", world_rank, myValue);
+#else
+    if (world_rank == 0)
+        printf("GCD of all provided nubmers is %d\n", myValue);
+#endif
 
     MPI_Finalize();
     return EXIT_SUCCESS;
