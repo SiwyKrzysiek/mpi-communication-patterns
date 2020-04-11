@@ -36,7 +36,7 @@ Program kożysta z biblioteki MPI. Trzeaba ją **zainstalować** przed kompilacj
 
 #### Kompilacja
 
-Do skomilowanaia programu można wykorzystać narzędzie makfie.
+Do skomilowanaia programu można wykorzystać narzędzie makefile.
 
 Przykład kompilacji
 
@@ -54,7 +54,8 @@ Liba argumentów musi być **wielokrotnościa liczby 2**.
 Przykład uruchomienia
 
 ```bash
-mpirun -n 4 ./nwd 15 21 24 57
+➜ mpirun -n 4 ./nwd 15 21 24 57
+GCD of all provided nubmers is 3
 ```
 
 ## Zadanie 2
@@ -68,3 +69,36 @@ Celem zadania są dwie rzeczy.
 Utworzyć jednowymiarowy komunikator z wirtualną topologią kartezjańską (O toplogiach wirtualnych w MPI możecie Państwo przeczytać np. [tu](https://computing.llnl.gov/tutorials/mpi/#Virtual_Topologies)).
 
 Proszę rozesłać wektor int o rozmiarze 1000000 (podział danych na części po 1000 elementów) z procesu 0 do pozostałych procesów przy użyciu potokowego przesyłania danych (rys). Proszę w tym celu użyć stworzonego przez Państwa komunikatora Kartezjańskiego i funkcji MPI_Cart_shift w celu określenia sąsiedniego procesu. (Procedura ułatwi obsługę warunków brzegowych – dla procesu 0 i n-1 zwracając dla ich sąsiadów wartość MPI_PROC_NULL). (Wysyłanie i odbiór danych z MPI_PROC_NULL jest dozwolony i pozwoli uprościć program).
+
+### Rozwiązanie
+
+Program będący rzowiązaniem zadania znajduje się w katalogu [nwd](./nwd).
+
+Program kożysta z biblioteki MPI. Trzeaba ją **zainstalować** przed kompilacją i uruchomieniem.
+
+Program tworzy comunikator kartezjański oraz przy jego pomocy wykonuje potokowe przesłanie danych.
+
+- Pierwszy proces inicjalizuje vetro zerami,
+- Procesy środkowe modyfikują dane poprzez zwiększenie wartości o 1,
+- Proces końcowy redukuje wartości do ich sumy
+
+#### Kompilacja
+
+Do skomilowanaia programu można wykorzystać narzędzie makefile.
+
+Przykład kompilacji
+
+```bash
+make
+```
+
+#### Uruchomienie
+
+Program trzeba urchomić przy pomocy polecenia mpirun.  
+
+Przykład uruchomienia
+
+```zbash
+➜ mpirun -n 5 --oversubscribe ./pipeline
+Sum of received values: 3000000
+```
