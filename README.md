@@ -2,7 +2,7 @@
 
 Realizacja dwóch zadań skupiających się na zaimplementowaniu określonych schematów komunikacyjnych w programowaniu równoległym.
 
-## Zad 1
+## Zadanie 1
 
 Obliczanie NWD wielu liczb jednocześnie z zastosowaniem wzorca _dissemination pattern_.
 
@@ -56,3 +56,15 @@ Przykład uruchomienia
 ```bash
 mpirun -n 4 ./nwd 15 21 24 57
 ```
+
+## Zadanie 2
+
+W wypadku rozsyłania dużych danych często efektywniej jest zastosować wzorzec potokowego przesyłania danych (*pipeline),* gdzie dane (wysyłana wiadomość) są rozdzielane na n fragmentów. W zadaniu tym rozważmy jedno-wymiarową topologię komunikacyjną, gdzie każdy proces wysyła dane tylko do swojego prawego sąsiada. W momencie gdy zostanie otrzymany fragment danych od lewego sąsada jest przesyłany dalej do prawego sąsiada procesu który otrzymał dane, w tym samym momencie zaczyna się odbiór następnej porcji danych. (rys2 - zalacznik).
+
+![Pattern visualization](./images/rys_2.png)
+
+Celem zadania są dwie rzeczy.
+
+Utworzyć jednowymiarowy komunikator z wirtualną topologią kartezjańską (O toplogiach wirtualnych w MPI możecie Państwo przeczytać np. [tu](https://computing.llnl.gov/tutorials/mpi/#Virtual_Topologies)).
+
+Proszę rozesłać wektor int o rozmiarze 1000000 (podział danych na części po 1000 elementów) z procesu 0 do pozostałych procesów przy użyciu potokowego przesyłania danych (rys). Proszę w tym celu użyć stworzonego przez Państwa komunikatora Kartezjańskiego i funkcji MPI_Cart_shift w celu określenia sąsiedniego procesu. (Procedura ułatwi obsługę warunków brzegowych – dla procesu 0 i n-1 zwracając dla ich sąsiadów wartość MPI_PROC_NULL). (Wysyłanie i odbiór danych z MPI_PROC_NULL jest dozwolony i pozwoli uprościć program).
