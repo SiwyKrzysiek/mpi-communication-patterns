@@ -31,11 +31,15 @@ int main(int argc, char **argv)
 
     int cartesianRank;
     MPI_Comm_rank(cartesianCommunicator, &cartesianRank);
-    // printf("From rank %d to %d\n", world_rank, cartesianRank);
+#ifdef DEBUG
+    printf("From rank %d to %d\n", world_rank, cartesianRank);
+#endif
 
     int previousRank, nextRank;
     MPI_Cart_shift(cartesianCommunicator, 0, 1, &previousRank, &nextRank);
-    // printf("%d: previous is %d, next is %d\n", cartesianRank, previousRank, nextRank);
+#ifdef DEBUG
+    printf("%d: previous is %d, next is %d\n", cartesianRank, previousRank, nextRank);
+#endif
 
     int *vector;
     if (cartesianRank == 0) // First process has vector
