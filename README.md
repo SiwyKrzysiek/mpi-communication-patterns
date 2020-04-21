@@ -1,5 +1,7 @@
 # Wzorce komunikacyjne MPI
 
+<!-- Link do repozytorium: https://github.com/SiwyKrzysiek/mpi-communication-patterns -->
+
 Realizacja dwóch zadań skupiających się na zaimplementowaniu określonych schematów komunikacyjnych w programowaniu równoległym.
 
 ## Zadanie 1
@@ -60,7 +62,7 @@ GCD of all provided nubmers is 3
 
 ## Zadanie 2
 
-W wypadku rozsyłania dużych danych często efektywniej jest zastosować wzorzec potokowego przesyłania danych (*pipeline),* gdzie dane (wysyłana wiadomość) są rozdzielane na n fragmentów. W zadaniu tym rozważmy jedno-wymiarową topologię komunikacyjną, gdzie każdy proces wysyła dane tylko do swojego prawego sąsiada. W momencie gdy zostanie otrzymany fragment danych od lewego sąsada jest przesyłany dalej do prawego sąsiada procesu który otrzymał dane, w tym samym momencie zaczyna się odbiór następnej porcji danych. (rys2 - zalacznik).
+W wypadku rozsyłania dużych danych często efektywniej jest zastosować wzorzec potokowego przesyłania danych (_pipeline),_ gdzie dane (wysyłana wiadomość) są rozdzielane na n fragmentów. W zadaniu tym rozważmy jedno-wymiarową topologię komunikacyjną, gdzie każdy proces wysyła dane tylko do swojego prawego sąsiada. W momencie gdy zostanie otrzymany fragment danych od lewego sąsada jest przesyłany dalej do prawego sąsiada procesu który otrzymał dane, w tym samym momencie zaczyna się odbiór następnej porcji danych. (rys2 - zalacznik).
 
 ![Pattern visualization](./images/rys_2.png)
 
@@ -94,7 +96,7 @@ make
 
 #### Uruchomienie
 
-Program trzeba urchomić przy pomocy polecenia mpirun.  
+Program trzeba urchomić przy pomocy polecenia mpirun.
 
 Przykład uruchomienia
 
